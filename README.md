@@ -1,6 +1,6 @@
-# @0ju1c3/next-auth-cli
+# @0ju1c3-oss/next-auth-cli
 
-A CLI tool to automatically setup NextAuth.js with Google OAuth in Next.js App Router projects.
+A CLI tool to automatically setup NextAuth.js authentication in Next.js App Router projects.
 
 ## Features
 
@@ -9,26 +9,28 @@ A CLI tool to automatically setup NextAuth.js with Google OAuth in Next.js App R
 - 🎨 **Ready-to-use Components**: Pre-built login button and user profile components
 - 🔒 **Protected Routes**: Middleware configuration with example protected routes
 - 📝 **TypeScript Support**: All generated files are TypeScript-ready
-- 🎯 **Google OAuth**: Pre-configured for Google authentication
+- 🔐 **Authentication Providers**: Currently ships with Google OAuth (more providers coming soon!)
+
+> **Note**: This package currently generates Google OAuth setup. Support for multiple providers (GitHub, Discord, Credentials, etc.) and custom configuration files is planned. See [TODO.md](TODO.md) for the full roadmap.
 
 ## Installation
 
 ### As a dev dependency (recommended)
 
 ```bash
-bun add -d @0ju1c3/next-auth-cli
+bun add -d @0ju1c3-oss/next-auth-cli
 ```
 
 or
 
 ```bash
-npm install -D @0ju1c3/next-auth-cli
+npm install -D @0ju1c3-oss/next-auth-cli
 ```
 
 ### Global installation
 
 ```bash
-bun add -g @0ju1c3/next-auth-cli
+bun add -g @0ju1c3-oss/next-auth-cli
 ```
 
 ## Usage
@@ -42,7 +44,7 @@ bunx next-auth-setup
 or with npx:
 
 ```bash
-npx @0ju1c3/next-auth-cli
+npx @0ju1c3-oss/next-auth-cli
 ```
 
 ## What Gets Generated
@@ -50,7 +52,7 @@ npx @0ju1c3/next-auth-cli
 The CLI creates the following files in your project:
 
 ### 1. **Authentication Configuration**
-- `auth.ts` (or `src/auth.ts`) - NextAuth.js configuration with Google provider
+- `auth.ts` (or `src/auth.ts`) - NextAuth.js configuration (currently: Google OAuth provider)
 
 ### 2. **Middleware**
 - `middleware.ts` (or `src/middleware.ts`) - Route protection for `/dashboard/*` and `/profile/*`
@@ -235,6 +237,16 @@ https://yourdomain.com/api/auth/callback/google
 ## License
 
 ISC
+
+## Future Roadmap
+
+See [TODO.md](TODO.md) for planned features including:
+- Multiple authentication providers (GitHub, Discord, Twitter, Credentials, etc.)
+- Configuration file support (`next-auth-cli.json`)
+- Interactive setup mode
+- Pages Router support
+- Database session adapters
+- And more!
 
 ## Contributing
 

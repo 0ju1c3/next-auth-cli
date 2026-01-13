@@ -1,7 +1,7 @@
 {
-  "name": "@0ju1c3/next-auth-cli",
-  "version": "1.0.0",
-  "description": "CLI tool to automatically setup NextAuth.js with Google OAuth in Next.js App Router projects",
+  "name": "@0ju1c3-oss/next-auth-cli",
+  "version": "1.0.1",
+  "description": "CLI tool to automatically setup NextAuth.js authentication in Next.js App Router projects",
   "main": "./dist/index.js",
   "type": "module",
   "bin": {
