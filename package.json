@@ -1,6 +1,6 @@
 {
   "name": "@0ju1c3-oss/next-auth-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CLI tool to automatically setup NextAuth.js authentication in Next.js App Router projects",
   "main": "./dist/index.js",
   "type": "module",

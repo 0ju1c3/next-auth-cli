@@ -38,30 +38,7 @@ export const config = {
 export async function generateAuthRoute(structure: ProjectStructure): Promise<string> {
   const authRoutePath = join(structure.appPath, 'api', 'auth', '[...nextauth]', 'route.ts');
 
-  const content = `import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
-
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  session: {
-    strategy: "jwt",
-  },
-  callbacks: {
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub!
-      }
-      return session
-    },
-  },
-})
-
-export const { GET, POST } = handlers
+  const content = `export { GET, POST } from "@/auth"
 `;
 
   await writeFile(authRoutePath, content);
@@ -76,24 +53,36 @@ export async function generateAuthConfig(structure: ProjectStructure): Promise<s
     ? join(structure.basePath, 'auth.ts')
     : join(process.cwd(), 'auth.ts');
 
-  const content = `import NextAuth from "next-auth"
+  const content = `import NextAuth, { type DefaultSession } from "next-auth"
 import Google from "next-auth/providers/google"
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string
+    } & DefaultSession["user"]
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
     }),
   ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub!
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
       }
+      return token
+    },
+    async session({ session, token }) {
+      session.user.id = token.sub!
       return session
     },
   },
@@ -202,14 +191,14 @@ export async function generateEnvExample(cwd: string): Promise<string> {
   const envExamplePath = join(cwd, '.env.local.example');
 
   const content = `# NextAuth Configuration
-NEXTAUTH_SECRET=your-secret-key-here
-NEXTAUTH_URL=http://localhost:3000
+AUTH_SECRET=your-secret-key-here
 
 # Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+AUTH_GOOGLE_ID=your-google-client-id
+AUTH_GOOGLE_SECRET=your-google-client-secret
 `;
 
   await writeFile(envExamplePath, content);
   return envExamplePath;
 }
+

@@ -8,7 +8,6 @@ import {
   generateUserProfile,
   generateLoginButton,
   generateEnvExample,
-  generateAuthTypes,
 } from './utils/generator.js';
 
 export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> {
@@ -87,10 +86,6 @@ export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> 
     const envExamplePath = await generateEnvExample(cwd);
     console.log(chalk.green('✓'), `Created ${chalk.gray(envExamplePath.replace(cwd, '.'))}`);
 
-    // Generate auth type declarations
-    const authTypesPath = await generateAuthTypes(cwd);
-    console.log(chalk.green('✓'), `Created ${chalk.gray(authTypesPath.replace(cwd, '.'))}`);
-
     // Success message with next steps
     console.log(chalk.green.bold('\n✨ NextAuth setup completed successfully!\n'));
 
@@ -104,7 +99,8 @@ export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> 
     console.log(chalk.gray('   - Create a new project or select an existing one'));
     console.log(chalk.gray('   - Enable Google+ API'));
     console.log(chalk.gray('   - Create OAuth 2.0 credentials'));
-    console.log(chalk.gray('   - Add authorized redirect URI: http://localhost:3000/api/auth/callback/google\n'));
+    console.log(chalk.gray('   - Add authorized redirect URI: http://localhost:3000/api/auth/callback/google'));
+    console.log(chalk.gray('   - Copy credentials to .env.local as AUTH_GOOGLE_ID and AUTH_GOOGLE_SECRET\n'));
 
     console.log(chalk.yellow('3.'), 'Add', chalk.cyan('SessionProvider'), 'to your root layout:');
     console.log(chalk.gray('   Update your app/layout.tsx to wrap children with SessionProvider\n'));

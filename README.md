@@ -85,11 +85,10 @@ cp .env.local.example .env.local
 Add your credentials:
 
 ```env
-NEXTAUTH_SECRET=your-secret-key-here
-NEXTAUTH_URL=http://localhost:3000
+AUTH_SECRET=your-secret-key-here
 
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+AUTH_GOOGLE_ID=your-google-client-id
+AUTH_GOOGLE_SECRET=your-google-client-secret
 ```
 
 Generate a secret:
