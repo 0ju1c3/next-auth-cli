@@ -57,3 +57,41 @@ export function isNextProject(cwd: string): boolean {
     return false;
   }
 }
+
+/**
+ * Checks if next-auth is already installed
+ * @param cwd - Current working directory
+ * @returns true if next-auth is in dependencies or devDependencies
+ */
+export function hasNextAuth(cwd: string): boolean {
+  const packageJsonPath = join(cwd, 'package.json');
+
+  if (!existsSync(packageJsonPath)) {
+    return false;
+  }
+
+  try {
+    const packageJson = require(packageJsonPath);
+    return !!(packageJson.dependencies?.[('next-auth')] || packageJson.devDependencies?.['next-auth']);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Detects the package manager used in the project
+ * @param cwd - Current working directory
+ * @returns Package manager type: 'bun' | 'pnpm' | 'yarn' | 'npm'
+ */
+export function getPackageManager(cwd: string): 'bun' | 'pnpm' | 'yarn' | 'npm' {
+  if (existsSync(join(cwd, 'bun.lockb'))) {
+    return 'bun';
+  }
+  if (existsSync(join(cwd, 'pnpm-lock.yaml'))) {
+    return 'pnpm';
+  }
+  if (existsSync(join(cwd, 'yarn.lock'))) {
+    return 'yarn';
+  }
+  return 'npm';
+}

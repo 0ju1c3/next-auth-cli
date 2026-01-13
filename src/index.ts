@@ -1,5 +1,6 @@
 import chalk from 'chalk';
-import { detectProjectStructure, isNextProject } from './utils/detect.js';
+import { execSync } from 'child_process';
+import { detectProjectStructure, isNextProject, hasNextAuth, getPackageManager } from './utils/detect.js';
 import {
   generateMiddleware,
   generateAuthRoute,
@@ -7,6 +8,7 @@ import {
   generateUserProfile,
   generateLoginButton,
   generateEnvExample,
+  generateAuthTypes,
 } from './utils/generator.js';
 
 export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> {
@@ -32,7 +34,34 @@ export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> 
     process.exit(1);
   }
 
-  console.log(chalk.cyan('\n📝 Generating files...\n'));
+  // Check and install next-auth if needed
+  const nextAuthInstalled = hasNextAuth(cwd);
+  if (!nextAuthInstalled) {
+    const packageManager = getPackageManager(cwd);
+    console.log(chalk.cyan('\n📦 Installing next-auth...\n'));
+
+    const installCommands = {
+      bun: 'bun add next-auth',
+      npm: 'npm install next-auth',
+      yarn: 'yarn add next-auth',
+      pnpm: 'pnpm add next-auth',
+    };
+
+    try {
+      const command = installCommands[packageManager];
+      console.log(chalk.gray(`   Running: ${command}`));
+      execSync(command, { cwd, stdio: 'inherit' });
+      console.log(chalk.green('✓'), 'next-auth installed successfully\n');
+    } catch (error) {
+      console.error(chalk.red('❌ Failed to install next-auth automatically.'));
+      console.error(chalk.yellow('   Please install it manually: bun add next-auth'));
+      console.error(chalk.gray('   Continuing with file generation...\n'));
+    }
+  } else {
+    console.log(chalk.green('\n✓ next-auth is already installed\n'));
+  }
+
+  console.log(chalk.cyan('📝 Generating files...\n'));
 
   try {
     // Generate auth configuration
@@ -58,27 +87,29 @@ export async function setupNextAuth(cwd: string = process.cwd()): Promise<void> 
     const envExamplePath = await generateEnvExample(cwd);
     console.log(chalk.green('✓'), `Created ${chalk.gray(envExamplePath.replace(cwd, '.'))}`);
 
+    // Generate auth type declarations
+    const authTypesPath = await generateAuthTypes(cwd);
+    console.log(chalk.green('✓'), `Created ${chalk.gray(authTypesPath.replace(cwd, '.'))}`);
+
     // Success message with next steps
     console.log(chalk.green.bold('\n✨ NextAuth setup completed successfully!\n'));
 
     console.log(chalk.cyan.bold('📋 Next Steps:\n'));
-    console.log(chalk.yellow('1.'), 'Install NextAuth.js (if not already installed):');
-    console.log(chalk.gray('   bun add next-auth@beta\n'));
 
-    console.log(chalk.yellow('2.'), 'Create a', chalk.cyan('.env.local'), 'file with your credentials:');
+    console.log(chalk.yellow('1.'), 'Create a', chalk.cyan('.env.local'), 'file with your credentials:');
     console.log(chalk.gray('   cp .env.local.example .env.local\n'));
 
-    console.log(chalk.yellow('3.'), 'Get Google OAuth credentials:');
+    console.log(chalk.yellow('2.'), 'Get Google OAuth credentials:');
     console.log(chalk.gray('   - Go to https://console.cloud.google.com/'));
     console.log(chalk.gray('   - Create a new project or select an existing one'));
     console.log(chalk.gray('   - Enable Google+ API'));
     console.log(chalk.gray('   - Create OAuth 2.0 credentials'));
     console.log(chalk.gray('   - Add authorized redirect URI: http://localhost:3000/api/auth/callback/google\n'));
 
-    console.log(chalk.yellow('4.'), 'Add', chalk.cyan('SessionProvider'), 'to your root layout:');
+    console.log(chalk.yellow('3.'), 'Add', chalk.cyan('SessionProvider'), 'to your root layout:');
     console.log(chalk.gray('   Update your app/layout.tsx to wrap children with SessionProvider\n'));
 
-    console.log(chalk.yellow('5.'), 'Start your development server:');
+    console.log(chalk.yellow('4.'), 'Start your development server:');
     console.log(chalk.gray('   bun run dev\n'));
 
     console.log(chalk.cyan.bold('📚 Components created:'));
