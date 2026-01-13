@@ -5,7 +5,8 @@ A CLI tool to automatically setup NextAuth.js authentication in Next.js App Rout
 ## Features
 
 - 🚀 **Quick Setup**: Automatically generates all necessary NextAuth.js files
-- 🔍 **Smart Detection**: Detects `src/` directory and App Router structure
+- 📦 **Auto-Install**: Automatically installs `next-auth@beta` if not already present
+- 🔍 **Smart Detection**: Detects `src/` directory, App Router structure, and package manager (bun/npm/yarn/pnpm)
 - 🎨 **Ready-to-use Components**: Pre-built login button and user profile components
 - 🔒 **Protected Routes**: Middleware configuration with example protected routes
 - 📝 **TypeScript Support**: All generated files are TypeScript-ready
@@ -71,13 +72,9 @@ The CLI creates the following files in your project:
 
 After running the CLI, follow these steps:
 
-### 1. Install NextAuth.js
+> **Note**: The CLI automatically installs `next-auth@beta` for you if it's not already in your project!
 
-```bash
-bun add next-auth@beta
-```
-
-### 2. Setup Environment Variables
+### 1. Setup Environment Variables
 
 Create a `.env.local` file:
 
@@ -101,7 +98,7 @@ Generate a secret:
 openssl rand -base64 32
 ```
 
-### 3. Get Google OAuth Credentials
+### 2. Get Google OAuth Credentials
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select an existing one
@@ -113,7 +110,7 @@ openssl rand -base64 32
    ```
 6. Copy the Client ID and Client Secret to your `.env.local`
 
-### 4. Wrap Your App with SessionProvider
+### 3. Wrap Your App with SessionProvider
 
 Update your `app/layout.tsx`:
 
@@ -133,7 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### 5. Use the Components
+### 4. Use the Components
 
 ```tsx
 import LoginButton from '@/components/login-button'
