@@ -1,0 +1,60 @@
+{
+  "name": "@0ju1c3-oss/next-auth-cli",
+  "version": "1.0.4",
+  "description": "CLI tool to automatically setup NextAuth.js authentication in Next.js App Router projects",
+  "main": "./dist/index.js",
+  "type": "module",
+  "bin": {
+    "next-auth-setup": "./bin/cli.js"
+  },
+  "scripts": {
+    "build": "bun build src/cli.ts --outdir dist --target node --format esm",
+    "dev": "bun run src/cli.ts",
+    "prepublishOnly": "bun run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0ju1c3/next-auth-cli.git"
+  },
+  "keywords": [
+    "nextauth",
+    "next-auth",
+    "nextjs",
+    "cli",
+    "oauth",
+    "google",
+    "authentication",
+    "setup"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/0ju1c3/next-auth-cli/issues"
+  },
+  "homepage": "https://github.com/0ju1c3/next-auth-cli#readme",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "next-auth": ">=5.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "next": { "optional": true },
+    "next-auth": { "optional": true },
+    "react": { "optional": true }
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ]
+}
