@@ -1,5 +1,5 @@
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { existsSync, readFileSync } from 'fs';
+import { join, dirname } from 'path';
 
 export interface ProjectStructure {
   hasSrcDir: boolean;
@@ -23,7 +23,9 @@ export function detectProjectStructure(cwd: string): ProjectStructure {
 
   const basePath = hasSrcDir ? join(cwd, 'src') : cwd;
   const appPath = join(basePath, 'app');
-  const componentsPath = join(cwd, 'components');
+  const componentsPath = hasSrcDir
+    ? join(cwd, 'src', 'components')
+    : join(cwd, 'components');
   const middlewarePath = hasSrcDir
     ? join(cwd, 'src', 'middleware.ts')
     : join(cwd, 'middleware.ts');
@@ -51,7 +53,7 @@ export function isNextProject(cwd: string): boolean {
   }
 
   try {
-    const packageJson = require(packageJsonPath);
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
     return !!(packageJson.dependencies?.next || packageJson.devDependencies?.next);
   } catch {
     return false;
@@ -71,8 +73,8 @@ export function hasNextAuth(cwd: string): boolean {
   }
 
   try {
-    const packageJson = require(packageJsonPath);
-    return !!(packageJson.dependencies?.[('next-auth')] || packageJson.devDependencies?.['next-auth']);
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+    return !!(packageJson.dependencies?.['next-auth'] || packageJson.devDependencies?.['next-auth']);
   } catch {
     return false;
   }
@@ -84,14 +86,13 @@ export function hasNextAuth(cwd: string): boolean {
  * @returns Package manager type: 'bun' | 'pnpm' | 'yarn' | 'npm'
  */
 export function getPackageManager(cwd: string): 'bun' | 'pnpm' | 'yarn' | 'npm' {
-  if (existsSync(join(cwd, 'bun.lockb'))) {
-    return 'bun';
-  }
-  if (existsSync(join(cwd, 'pnpm-lock.yaml'))) {
-    return 'pnpm';
-  }
-  if (existsSync(join(cwd, 'yarn.lock'))) {
-    return 'yarn';
+  let dir = cwd;
+  while (dir !== dirname(dir)) {
+    if (existsSync(join(dir, 'bun.lock')) || existsSync(join(dir, 'bun.lockb'))) return 'bun';
+    if (existsSync(join(dir, 'pnpm-lock.yaml'))) return 'pnpm';
+    if (existsSync(join(dir, 'yarn.lock'))) return 'yarn';
+    if (existsSync(join(dir, 'package-lock.json'))) return 'npm';
+    dir = dirname(dir);
   }
   return 'npm';
 }
